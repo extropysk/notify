@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { WinstonModule, utilities as nestWinstonModuleUtilities } from 'nest-winston'
+import { SubsModule } from 'src/subs/subs.module'
 import { UsersModule } from 'src/users/users.module'
 import * as winston from 'winston'
 import LokiTransport from 'winston-loki'
@@ -9,6 +10,7 @@ import LokiTransport from 'winston-loki'
 @Module({
   imports: [
     UsersModule,
+    SubsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({ global: true }),
     WinstonModule.forRootAsync({
