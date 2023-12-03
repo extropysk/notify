@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { LoggerModule } from 'nestjs-pino'
 import pretty from 'pino-pretty'
+import { NotificationsModule } from 'src/notifications/notificatons.module'
 import { SubsModule } from 'src/subs/subs.module'
 import { UsersModule } from 'src/users/users.module'
 
@@ -10,6 +11,7 @@ import { UsersModule } from 'src/users/users.module'
   imports: [
     UsersModule,
     SubsModule,
+    NotificationsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({ global: true }),
     LoggerModule.forRootAsync({
