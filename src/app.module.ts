@@ -5,11 +5,9 @@ import { LoggerModule } from 'nestjs-pino'
 import pretty from 'pino-pretty'
 import { NotificationsModule } from 'src/notifications/notificatons.module'
 import { SubsModule } from 'src/subs/subs.module'
-import { UsersModule } from 'src/users/users.module'
 
 @Module({
   imports: [
-    UsersModule,
     SubsModule,
     NotificationsModule,
     ConfigModule.forRoot({ isGlobal: true }),
