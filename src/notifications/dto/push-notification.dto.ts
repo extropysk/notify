@@ -1,5 +1,4 @@
-import { IsEnum, IsOptional, IsString } from 'class-validator'
-import { NotificationType } from 'src/notifications/enums/notification-type.enum'
+import { IsOptional, IsString } from 'class-validator'
 
 export class PushNotificationDto {
   @IsString()
@@ -11,8 +10,4 @@ export class PushNotificationDto {
 
   @IsString()
   recipientId: string
-
-  @IsOptional()
-  @IsEnum(NotificationType)
-  type = NotificationType.WEB
 }

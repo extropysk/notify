@@ -12,9 +12,9 @@ import { NotificationsService } from 'src/notifications/notifications.service'
 export class NotificationsController {
   constructor(private notificationsService: NotificationsService) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Push notification' })
-  push(@Body() notification: PushNotificationDto, @Current() current: Payload) {
-    return this.notificationsService.push(notification, current)
+  @Post('web')
+  @ApiOperation({ summary: 'Push web notification' })
+  webPush(@Body() notification: PushNotificationDto, @Current() current: Payload) {
+    return this.notificationsService.webPush(notification, current)
   }
 }
