@@ -1,7 +1,7 @@
+import { MailerService } from '@nestjs-modules/mailer'
 import { Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Db } from 'mongodb'
-import { Payload } from 'src/core/interfaces/payload.interface'
 import { DATABASE } from 'src/db/database.module'
 import { PushNotificationDto } from 'src/notifications/dto/push-notification.dto'
 import { SubsService } from 'src/subs/subs.service'
@@ -15,6 +15,7 @@ export class NotificationsService {
     @Inject(DATABASE)
     private db: Db,
     private configService: ConfigService,
+    private readonly mailerService: MailerService,
     private subsService: SubsService
   ) {
     this.options = {
@@ -27,7 +28,7 @@ export class NotificationsService {
     }
   }
 
-  async webPush(notification: PushNotificationDto, current: Payload) {
+  async webPush(notification: PushNotificationDto) {
     const sub = await this.subsService.findOne({ userId: notification.recipientId })
     if (!sub?.web) {
       throw new NotFoundException()
@@ -41,7 +42,23 @@ export class NotificationsService {
       this.options
     )
 
-    // TODO: insert do db
+    return {}
+  }
+
+  async sendMail(notification: PushNotificationDto) {
+    const sub = await this.subsService.findOne({ userId: notification.recipientId })
+    if(!sub) {
+      throw new NotFoundException()
+    }
+
+    await this.mailerService
+      .sendMail({
+        to: sub.email,
+        // from: 'noreply@nestjs.com',
+        subject: notification.subject,
+        html: notification.body
+      })
+    
     return {}
   }
 }
