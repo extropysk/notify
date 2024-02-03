@@ -1,10 +1,13 @@
 import { MailerService } from '@nestjs-modules/mailer'
-import { Inject, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import Handlebars from 'handlebars'
 import { Db } from 'mongodb'
 import { DATABASE } from 'src/db/database.module'
-import { PushNotificationDto } from 'src/notifications/dto/push-notification.dto'
+import { MailNotificationDto } from 'src/notifications/dto/mail-notification.dto'
+import { WebNotificationDto } from 'src/notifications/dto/web-notification.dto'
 import { SubsService } from 'src/subs/subs.service'
+import { TemplatesService } from 'src/templates/templates.service'
 import webPush from 'web-push'
 
 @Injectable()
@@ -16,7 +19,8 @@ export class NotificationsService {
     private db: Db,
     private configService: ConfigService,
     private readonly mailerService: MailerService,
-    private subsService: SubsService
+    private subsService: SubsService,
+    private templatesService: TemplatesService
   ) {
     this.options = {
       vapidDetails: {
@@ -28,11 +32,12 @@ export class NotificationsService {
     }
   }
 
-  async webPush(notification: PushNotificationDto) {
+  async notifyWeb(notification: WebNotificationDto) {
     const sub = await this.subsService.findOne({ userId: notification.recipientId })
     if (!sub?.web) {
       throw new NotFoundException()
     }
+
     await webPush.sendNotification(
       sub.web,
       JSON.stringify({
@@ -45,18 +50,25 @@ export class NotificationsService {
     return {}
   }
 
-  async sendMail(notification: PushNotificationDto) {
+  async notifyMail(notification: MailNotificationDto) {
     const sub = await this.subsService.findOne({ userId: notification.recipientId })
     if(!sub) {
       throw new NotFoundException()
     }
 
+    const template = await this.templatesService.findOne({ _id: notification.templateId })
+    console.log(typeof template)
+    if(!template) {
+      throw new BadRequestException()
+    }
+
+    const t = Handlebars.compile(template.content)
     await this.mailerService
       .sendMail({
         to: sub.email,
         // from: 'noreply@nestjs.com',
         subject: notification.subject,
-        html: notification.body
+        html: t(notification.content)
       })
     
     return {}

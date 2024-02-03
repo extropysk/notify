@@ -5,6 +5,7 @@ import { DatabaseModule } from 'src/db/database.module'
 import { NotificationsController } from 'src/notifications/notifications.controller'
 import { NotificationsService } from 'src/notifications/notifications.service'
 import { SubsModule } from 'src/subs/subs.module'
+import { TemplatesModule } from 'src/templates/templates.module'
 
 @Module({
   providers: [NotificationsService],
@@ -12,6 +13,7 @@ import { SubsModule } from 'src/subs/subs.module'
   imports: [
     DatabaseModule,
     SubsModule,
+    TemplatesModule,
     MailerModule.forRootAsync({
       useFactory: async (config: ConfigService) => ({
         transport: config.get<string>('SMTP'),
