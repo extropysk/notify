@@ -8,3 +8,5 @@ export class BaseDto implements Base {
   })
   _id: ObjectId
 }
+
+export type WithoutId<T extends Base> = Omit<T, '_id'>

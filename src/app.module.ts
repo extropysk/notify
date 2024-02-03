@@ -5,10 +5,12 @@ import { LoggerModule } from 'nestjs-pino'
 import pretty from 'pino-pretty'
 import { NotificationsModule } from 'src/notifications/notificatons.module'
 import { SubsModule } from 'src/subs/subs.module'
+import { TemplatesModule } from 'src/templates/templates.module'
 
 @Module({
   imports: [
     SubsModule,
+    TemplatesModule,
     NotificationsModule,
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({ global: true }),
