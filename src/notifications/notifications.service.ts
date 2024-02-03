@@ -57,7 +57,6 @@ export class NotificationsService {
     }
 
     const template = await this.templatesService.findOne({ _id: notification.templateId })
-    console.log(typeof template)
     if(!template) {
       throw new BadRequestException()
     }
